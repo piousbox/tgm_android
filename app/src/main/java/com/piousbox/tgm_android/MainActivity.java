@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         updateUI(account);
+        super.onStart();
     }
 
     @Override
