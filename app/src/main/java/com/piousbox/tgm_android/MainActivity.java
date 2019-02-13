@@ -31,11 +31,14 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
 
     private void updateUI(GoogleSignInAccount account) {
-        Log.d("state", "whatever");
+        Log.d("+++", "updateUI()");
     }
 
+    // herehere
+    // From: https://developers.google.com/identity/sign-in/android/sign-in
+    // Nice!
     private void signIn() {
-        Log.d("state", "sign in");
+        Log.d("+++", "sign in");
         GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this).build();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         // Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -45,7 +48,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(View v) {
         Log.d("+++", "abba?");
-        
+
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                signIn();
+                break;
+        }
         /* switch (v.getId()) {
             case R.id.button1:
                 //Start activity one
@@ -97,6 +105,10 @@ public class MainActivity extends AppCompatActivity
         ).requestEmail().build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        updateUI(account);
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        Log.d("+++", "here");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
