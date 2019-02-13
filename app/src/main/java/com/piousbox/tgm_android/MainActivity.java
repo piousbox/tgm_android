@@ -25,15 +25,17 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private static int RC_SIGN_IN = 100;
     private static final String TAG = "MainActivity";
 
     private void updateUI(GoogleSignInAccount account) {
+        Log.d("state", "whatever");
     }
 
     private void signIn() {
+        Log.d("state", "sign in");
         GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this).build();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         // Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -41,7 +43,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onClick(View v) {
+        Log.d("+++", "abba?");
+        
+        /* switch (v.getId()) {
+            case R.id.button1:
+                //Start activity one
+                break;
+            case R.id.button2:
+                //Start activiy two
+                break;
+            // Do this for all buttons.
+        } */
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("state", "onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
@@ -54,6 +72,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
@@ -77,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN
         ).requestEmail().build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        // findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
