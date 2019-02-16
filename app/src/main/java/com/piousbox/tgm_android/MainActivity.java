@@ -15,13 +15,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 
 public class MainActivity extends AppCompatActivity
@@ -29,19 +27,21 @@ public class MainActivity extends AppCompatActivity
 
     private static int RC_SIGN_IN = 100;
     private static final String TAG = "MainActivity";
+    private GoogleSignInClient mGoogleSignInClient;
 
     private void updateUI(GoogleSignInAccount account) {
-        Log.d("+++", "updateUI()");
+        String email = null;
+        if (account != null) {
+            email = account.getEmail();
+        }
+        Log.d("+++ updateUI()", "" + email);
     }
 
-    // herehere
     // From: https://developers.google.com/identity/sign-in/android/sign-in
-    // Nice!
+    // Need creds from: https://developers.google.com/identity/sign-in/android/start
     private void signIn() {
         Log.d("+++", "sign in");
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this).build();
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        // Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -67,23 +67,25 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("state", "onActivityResult");
+        Log.d("+++ onActivityResult", "" + data);
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
+            Log.d("here", "1");
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
+        } else {
+            Log.d("here", "2");
         }
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-
+        Log.d("+++ handle", ""+completedTask);
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
             // Signed in successfully, show authenticated UI.
             updateUI(account);
         } catch (ApiException e) {
@@ -101,9 +103,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN
-        ).requestEmail().build();
-        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         updateUI(account);
